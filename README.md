@@ -1,7 +1,7 @@
 # neo0day's Solutions to Algorithms (4th Edition)
 neo0day's Solutions to Princeton's Algorithms (4th Edition) by Robert Sedgewick and Kevin Wayne
 
-
+Covers most coding problems!
 
 Disclaimer: The solutions provided are not guaranteed to be 100% correct or best in time/space complexity, 
             so please use with caution.
