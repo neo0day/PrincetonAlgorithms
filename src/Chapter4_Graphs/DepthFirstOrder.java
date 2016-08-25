@@ -1,60 +1,42 @@
 package Chapter4_Graphs;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class CC {
-	private boolean[] marked;   // marked[v] = has vertex v been marked?
-	private int[] id;           // id[v] = id of connected component containing v
-	private int[] size;         // size[id] = number of vertices in given component
-	private int count;          // number of connected components
-
-	public CC(Graph G) {
+public class DepthFirstOrder {
+	private boolean[] marked;
+	private Queue<Integer> pre;            // vertices in preorder
+	private Queue<Integer> post;           // vertices in postorder
+	private Deque<Integer> reversePost;    // vertices in reverse postorder
+	public DepthFirstOrder(Digraph G) {
+		pre = new LinkedList<Integer>();
+		post = new LinkedList<Integer>();
+		reversePost = new ArrayDeque<Integer>();
 		marked = new boolean[G.V()];
-		id = new int[G.V()];
-		size = new int[G.V()];
-		for (int v = 0; v < G.V(); v++) {
-			if (!marked[v]) {
-				bfs(G, v);
-				count++;
-			}
-		}
+		for (int v = 0; v < G.V(); v++)
+			if (!marked[v])
+				dfs(G, v);
 	}
-
-	private void bfs(Graph G, int s) {
-		Queue<Integer> q = new LinkedList<>();
-		q.add(s);
-		marked[s] = true;
-		while (!q.isEmpty()) {
-			int v = q.poll();
-			id[v] = count;
-			size[count]++;
-			for (int w : G.adj(v)) {
-				if (!marked[w]) {
-					q.add(w);
-					marked[w] = true;
-				}
-			}
-		}
-
+	private void dfs(Digraph G, int v) {
+		pre.add(v);
+		marked[v] = true;
+		for (int w : G.adj(v))
+			if (!marked[w])
+				dfs(G, w);
+		post.add(v);
+		reversePost.push(v);
 	}
-
-	public int id(int v) {
-		return id[v];
+	public Iterable<Integer> pre() {
+		return pre;
 	}
-
-	public int size(int v) {
-		return size[id[v]];
+	public Iterable<Integer> post() {
+		return post;
 	}
-
-	public int count() {
-		return count;
+	public Iterable<Integer> reversePost() {
+		return reversePost;
 	}
-
-	public boolean connected(int v, int w) {
-		return id(v) == id(w);
-	}
-
 }
 
 /******************************************************************************

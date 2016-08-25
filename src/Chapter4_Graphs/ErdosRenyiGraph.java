@@ -4,13 +4,11 @@ import java.util.Random;
 
 /**
  * Ex 4.1.39
- * Random graphs. Write a program ErdosRenyiGraph that takes integer values V and E 
- * from the command line and builds a graph by generating E random pairs of integers
- * between 0 and V - 1. Note: This generator produces self-loops and parallel edges.
+ * Random graphs. 
  */
 public class ErdosRenyiGraph {
 	private Graph G;
-	
+
 	public ErdosRenyiGraph(int V, int E) {
 		G = new Graph(V);
 		Random random = new Random();
@@ -20,7 +18,7 @@ public class ErdosRenyiGraph {
 			G.addEdge(v, w);
 		}
 	}
-	
+
 	public String toString() {
 		return G.toString();
 	}

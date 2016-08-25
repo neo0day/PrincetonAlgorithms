@@ -51,9 +51,9 @@ public class RandomIntervalGraph {
 				System.out.println("vertex " + v + ": " + map.get(v));
 			}
 		}
-		
+
 	}
-	
+
 	public String toString() {
 		return G.toString();
 	}

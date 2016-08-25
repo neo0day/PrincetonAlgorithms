@@ -3,28 +3,26 @@ package Chapter4_Graphs;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-import edu.princeton.cs.algs4.ST;
 import edu.princeton.cs.algs4.StdDraw;
-import edu.princeton.cs.algs4.StdOut;
 
 /**
  * Ex 4.1.37
  * Euclidean graphs.
  */
 public class EuclideanGraph {
-	private ST<String, Integer> st;  // string -> index
+	private HashMap<String, Integer> st;  // string -> index
 	private String[] keys;           // index  -> string
 	private Graph G;
 	private Point[] points;
 	private boolean[] marked;
 
-	@SuppressWarnings("resource")
 	public EuclideanGraph(String filename, String delimiter) throws FileNotFoundException {
-		st = new ST<String, Integer>();
+		st = new HashMap<>();
 
 		// First pass builds the index by reading strings to associate
 		// distinct strings with an index
@@ -32,18 +30,18 @@ public class EuclideanGraph {
 		while (in.hasNextLine()) {
 			String point = in.next();
 			System.out.println(point);
-			if (!st.contains(point))
+			if (!st.containsKey(point))
 				st.put(point, st.size());
-				
+
 		}
-		StdOut.println("Done reading " + filename);
-		
+		System.out.println("Done reading " + filename);
+
 		// inverted index to get string keys in an array
 		keys = new String[st.size()];
-		for (String name : st.keys()) {
+		for (String name : st.keySet()) {
 			keys[st.get(name)] = name;
 		}
-		
+
 		// convert string to Point
 		points = new Point[st.size()];
 		for (int i = 0; i < st.size(); i++) {
@@ -63,9 +61,11 @@ public class EuclideanGraph {
 			String y = in.next();
 			int w = st.get(y);
 			G.addEdge(v, w);
+			G.addEdge(w, v);
 		}
+		in.close();
 	}
-	
+
 	public void show() {
 		StdDraw.setScale(-1, 10);
 		marked = new boolean[G.V()];

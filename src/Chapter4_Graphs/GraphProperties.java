@@ -33,7 +33,7 @@ public class GraphProperties {
 				System.out.print("\nprocessing vertex " + v);
 			else if (v % 100 == 0)
 				System.out.print(".");
-				
+
 		}
 	}
 

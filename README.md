@@ -1,5 +1,5 @@
 # Princeton Algorithms Solution Manual
-Solutions to Princeton's Algorithms Coding Exercises for self-paced study of Algorithms
+Solutions to Princeton's Algorithms Coding Exercises for self-paced study of Algorithms (4th Edition) by Robert Sedgewick and Kevin Wayne
 
 
 

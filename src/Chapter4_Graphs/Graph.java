@@ -14,7 +14,6 @@ public class Graph {
 	private int V;
 	private int E;
 	private List<List<Integer>> adj;
-	private boolean[] marked;
 
 	public Graph(int V) {
 		if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
@@ -69,7 +68,6 @@ public class Graph {
 		return adj.get(v).size();
 	}
 
-
 	/**
 	 * Ex 4.1.3
 	 * deep copy
@@ -88,20 +86,9 @@ public class Graph {
 	 * Add a method hasEdge()
 	 */
 	public boolean hasEdge(int v, int w) {
-		marked = new boolean[this.V()];
-		if (w == v) return false;
-		return dfs(v, w);
-	}
-
-	private boolean dfs(int v, int w) {
-		if (v == w) return true;
-		marked[v] = true;
-		for (int neib : this.adj.get(v)) {
-			if (!marked[neib]) {
-				if (dfs(neib, w))
-					return true;
-			}
-		}
+		for (int u : adj.get(v))
+			if (u == w)
+				return true;
 		return false;
 	}
 
@@ -197,7 +184,7 @@ public class Graph {
 	private int time;
 	private int[] disc;
 	private int[] low;
-	
+
 	public void vertexClassification() {
 		articulation = new boolean[this.V()];
 		disc = new int[this.V()];
@@ -262,7 +249,7 @@ public class Graph {
 				adj.get(i).add(stack.pop());
 		}
 	}
-	
+
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner in = new Scanner(new File(args[0]));
 		Graph G = new Graph(in);
@@ -301,3 +288,27 @@ public class Graph {
 	}
 
 }
+
+/******************************************************************************
+ *  Copyright 2002-2015, Robert Sedgewick and Kevin Wayne.
+ *
+ *  This file is part of algs4.jar, which accompanies the textbook
+ *
+ *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+ *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+ *      http://algs4.cs.princeton.edu
+ *
+ *
+ *  algs4.jar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  algs4.jar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+ ******************************************************************************/

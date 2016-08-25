@@ -5,21 +5,47 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.Stack;
 
-/**
- * Ex 4.1.29
- * Modify Cycle
- */
-public class Cycle {
-	private boolean[] marked;
-	private int[] edgeTo;
-	private Stack<Integer> cycle;
+public class DirectedCycle {
+	private boolean[] marked;        // marked[v] = has vertex v been marked?
+	private int[] edgeTo;            // edgeTo[v] = previous vertex on path to v
+	private boolean[] onStack;       // onStack[v] = is vertex on the stack?
+	private Stack<Integer> cycle;    // directed cycle (or null if no such cycle)
 
-	public Cycle(Graph G) {
-		marked = new boolean[G.V()];
-		edgeTo = new int[G.V()];
+	public DirectedCycle(Digraph G) {
+		marked  = new boolean[G.V()];
+		onStack = new boolean[G.V()];
+		edgeTo  = new int[G.V()];
 		for (int v = 0; v < G.V(); v++)
-			if (!marked[v])
-				dfs(G, -1, v);
+			if (!marked[v] && cycle == null) dfs(G, v);
+	}
+
+	// check that algorithm computes either the topological order or finds a directed cycle
+	private void dfs(Digraph G, int v) {
+		onStack[v] = true;
+		marked[v] = true;
+		for (int w : G.adj(v)) {
+
+			// short circuit if directed cycle found
+			if (cycle != null) return;
+
+			//found new vertex, so recur
+			else if (!marked[w]) {
+				edgeTo[w] = v;
+				dfs(G, w);
+			}
+
+			// trace back directed cycle
+			else if (onStack[w]) {
+				cycle = new Stack<Integer>();
+				for (int x = v; x != w; x = edgeTo[x]) {
+					cycle.push(x);
+				}
+				cycle.push(w);
+				cycle.push(v);
+				assert check();
+			}
+		}
+		onStack[v] = false;
 	}
 
 	public boolean hasCycle() {
@@ -30,48 +56,45 @@ public class Cycle {
 		return cycle;
 	}
 
-	private void dfs(Graph G, int u, int v) {
-		marked[v] = true;
-		for (int w : G.adj(v)) {
 
-			// short circuit if cycle already found
-			if (cycle != null) return;
+	// certify that digraph has a directed cycle if it reports one
+	private boolean check() {
 
-			if (w == v || marked[w])			// self-loop || parallel edges
-				continue;
-
-			if (!marked[w]) {
-				edgeTo[w] = v;
-				dfs(G, v, w);
+		if (hasCycle()) {
+			// verify cycle
+			int first = -1, last = -1;
+			for (int v : cycle()) {
+				if (first == -1) first = v;
+				last = v;
 			}
-
-			// check for cycle (but disregard reverse of edge leading to v)
-			else if (w != u) {
-				cycle = new Stack<Integer>();
-				for (int x = v; x != w; x = edgeTo[x]) {
-					cycle.push(x);
-				}
-				cycle.push(w);
-				cycle.push(v);
+			if (first != last) {
+				System.err.printf("cycle begins with %d and ends with %d\n", first, last);
+				return false;
 			}
 		}
+
+
+		return true;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner in = new Scanner(new File(args[0]));
-		Graph G = new Graph(in);
-		Cycle finder = new Cycle(G);
+		Digraph G = new Digraph(in);
+
+		DirectedCycle finder = new DirectedCycle(G);
 		if (finder.hasCycle()) {
+			System.out.print("Directed cycle: ");
 			for (int v : finder.cycle()) {
 				System.out.print(v + " ");
 			}
 			System.out.println();
 		}
-		else {
-			System.out.println("Graph is acyclic");
-		}
-	}
 
+		else {
+			System.out.println("No directed cycle");
+		}
+		System.out.println();
+	}
 
 }
 

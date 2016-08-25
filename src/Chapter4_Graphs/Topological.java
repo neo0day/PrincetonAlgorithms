@@ -3,75 +3,52 @@ package Chapter4_Graphs;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.Stack;
 
-/**
- * Ex 4.1.29
- * Modify Cycle
- */
-public class Cycle {
-	private boolean[] marked;
-	private int[] edgeTo;
-	private Stack<Integer> cycle;
+public class Topological {
+	private Iterable<Integer> order;  // topological order
+	private int[] rank;               // rank[v] = position of vertex v in topological order
 
-	public Cycle(Graph G) {
-		marked = new boolean[G.V()];
-		edgeTo = new int[G.V()];
-		for (int v = 0; v < G.V(); v++)
-			if (!marked[v])
-				dfs(G, -1, v);
-	}
-
-	public boolean hasCycle() {
-		return cycle != null;
-	}
-
-	public Iterable<Integer> cycle() {
-		return cycle;
-	}
-
-	private void dfs(Graph G, int u, int v) {
-		marked[v] = true;
-		for (int w : G.adj(v)) {
-
-			// short circuit if cycle already found
-			if (cycle != null) return;
-
-			if (w == v || marked[w])			// self-loop || parallel edges
-				continue;
-
-			if (!marked[w]) {
-				edgeTo[w] = v;
-				dfs(G, v, w);
-			}
-
-			// check for cycle (but disregard reverse of edge leading to v)
-			else if (w != u) {
-				cycle = new Stack<Integer>();
-				for (int x = v; x != w; x = edgeTo[x]) {
-					cycle.push(x);
-				}
-				cycle.push(w);
-				cycle.push(v);
-			}
+	public Topological(Digraph G) {
+		DirectedCycle finder = new DirectedCycle(G);
+		if (!finder.hasCycle()) {
+			DepthFirstOrder dfs = new DepthFirstOrder(G);
+			order = dfs.reversePost();
+			rank = new int[G.V()];
+			int i = 0;
+			for (int v : order)
+				rank[v] = i++;
 		}
+	}
+
+	public Iterable<Integer> order() {
+		return order;
+	}
+
+	public boolean hasOrder() {
+		return order != null;
+	}
+
+	public int rank(int v) {
+		validateVertex(v);
+		if (hasOrder()) return rank[v];
+		else            return -1;
+	}
+
+	// throw an IndexOutOfBoundsException unless 0 <= v < V
+	private void validateVertex(int v) {
+		int V = rank.length;
+		if (v < 0 || v >= V)
+			throw new IndexOutOfBoundsException("vertex " + v + " is not between 0 and " + (V-1));
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner in = new Scanner(new File(args[0]));
-		Graph G = new Graph(in);
-		Cycle finder = new Cycle(G);
-		if (finder.hasCycle()) {
-			for (int v : finder.cycle()) {
-				System.out.print(v + " ");
-			}
-			System.out.println();
-		}
-		else {
-			System.out.println("Graph is acyclic");
+		Digraph dg = new Digraph(in);
+		Topological topological = new Topological(dg);
+		for (int v : topological.order()) {
+			System.out.println(v);
 		}
 	}
-
 
 }
 

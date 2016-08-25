@@ -30,18 +30,18 @@ public class RandomSimpleGraph {
 		@Override
 		public boolean equals(Object obj) {
 			if (!(obj instanceof Edge))
-	            return false;
-	        if (obj == this)
-	            return true;
-	        Edge that = (Edge)obj;
+				return false;
+			if (obj == this)
+				return true;
+			Edge that = (Edge)obj;
 			return (this.v == that.v && this.w == that.w);
 		}
-		
+
 		@Override
-	    public int hashCode() {
+		public int hashCode() {
 			return v * w;
 		}
-		
+
 	}
 
 	public RandomSimpleGraph(int V, int E) {
