@@ -1,5 +1,5 @@
-# Princeton Algorithms Solution Manual
-Solutions to Princeton's Algorithms Coding Exercises for self-paced study of Algorithms (4th Edition) by Robert Sedgewick and Kevin Wayne
+# neo0day's Solutions to Algorithms (4th Edition)
+neo0day's Solutions to Princeton's Algorithms (4th Edition) by Robert Sedgewick and Kevin Wayne
 
 
 
