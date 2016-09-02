@@ -463,6 +463,40 @@ public class Graph_Creative {
 		}
 	}
 
+	/**
+	 * Ex 4.3.26 
+	 * Critical edges. 
+	 */
+	public Iterable<Edge> findCriticalEdges(EdgeWeightedGraph G) {
+		Edge[] edges = new Edge[G.E()];
+		boolean[] critical = new boolean[G.E()];
+		int i = 0;
+		for (Edge e : G.edges())
+			edges[i++] = e;
+		Arrays.sort(edges);
+		UF uf = new UF(G.V());
+		for (i = 0; i < G.V(); i++) {
+			Edge e = edges[i];
+			int v = e.either();
+			int w = e.other(v);
+			if (!uf.connected(v, w)) {
+				uf.union(v, w);
+				critical[i] = true;
+			} else {
+				// search same weight in MST
+				double weight = e.weight();
+				for (int j = i - 1; j > 0 && edges[j].weight() == weight && critical[j]; j--)
+					critical[j] = false;
+			}
+		}
+		List<Edge> result = new LinkedList<>();
+		for (i = 0; i < G.E(); i++) {
+			if (critical[i])
+				result.add(edges[i]);
+		}
+		return result;
+	}
+
 	public static void main(String[] args) throws FileNotFoundException {
 		Graph_Creative gc = new Graph_Creative();
 		Scanner in = new Scanner(new File(args[0]));
